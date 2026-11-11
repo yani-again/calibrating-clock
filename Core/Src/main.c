@@ -141,8 +141,27 @@ int main(void)
     gpio_config_leds.outputType = simple_gpio_out_pushpull;
     gpio_config_leds.pupd = simple_gpio_pupd_none;
     gpio_config_leds.speed = simple_gpio_speed_vlow;
-    gpio_config_leds.pin = SER_PIN;
 
+    // SER config
+    gpio_config_leds.pin = SER_PIN;
+    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
+
+    // SRCLK config
+    gpio_config_leds.pin = SRCLK_PIN;
+    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
+
+    // RCLK config
+    // hour tens
+    gpio_config_leds.pin = SN74_pin_hourTens;
+    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
+    // hour ones
+    gpio_config_leds.pin = SN74_pin_hourOnes;
+    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
+    // minute tens
+    gpio_config_leds.pin = SN74_pin_minTens;
+    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
+    // minute ones
+    gpio_config_leds.pin = SN74_pin_minOnes;
     simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
 
     // default screen to 9999 at startup/reset
