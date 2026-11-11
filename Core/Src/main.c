@@ -133,22 +133,17 @@ int main(void)
 
     // TODO: configure GPIO
     // PA0 = SER
-    simple_gpio_config_t gpio_config_ser;
     // PA1 = SRCLK
-    simple_gpio_config_t gpio_config_srclk;
     // PA2-5 = RCLK
-    simple_gpio_config_t gpio_config_rclk_ht;
-    simple_gpio_config_t gpio_config_rclk_hu;
-    simple_gpio_config_t gpio_config_rclk_mt;
-    simple_gpio_config_t gpio_config_rclk_mu;
+    simple_gpio_config_t gpio_config_leds;
 
-    gpio_config_ser.mode = simple_gpio_mode_output;
-    gpio_config_ser.outputType = simple_gpio_out_pushpull;
-    gpio_config_ser.pupd = simple_gpio_pupd_none;
-    gpio_config_ser.speed = simple_gpio_speed_vlow;
-    gpio_config_ser.pin = SER_PIN;
+    gpio_config_leds.mode = simple_gpio_mode_output;
+    gpio_config_leds.outputType = simple_gpio_out_pushpull;
+    gpio_config_leds.pupd = simple_gpio_pupd_none;
+    gpio_config_leds.speed = simple_gpio_speed_vlow;
+    gpio_config_leds.pin = SER_PIN;
 
-    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_ser);
+    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
 
     // default screen to 9999 at startup/reset
     sn74_write(SER_SRCLK_PORT, SER_PIN, SRCLK_PIN, FONT_9);
