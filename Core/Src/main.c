@@ -148,7 +148,6 @@ int main(void)
     gpio_config_ser.speed = simple_gpio_speed_vlow;
     gpio_config_ser.pin = SER_PIN;
 
-
     simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_ser);
 
     // default screen to 9999 at startup/reset
