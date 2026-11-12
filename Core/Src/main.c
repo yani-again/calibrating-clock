@@ -37,20 +37,15 @@
 /* USER CODE BEGIN PD */
 
 // SN74HC595N shift register definitions
-#define SN74_SER_SRCLK_PORT  SIMPLE_GPIOB
-#define SN74_RCLK_PORT       SIMPLE_GPIOB
+#define SN74_SER_SRCLK_PORT  SIMPLE_GPIOA
+#define SN74_RCLK_PORT       SIMPLE_GPIOA
 #define SN74_SER_PIN         0U
 #define SN74_SRCLK_PIN       1U
 
 // longwave radio transceiver definitions
-
-
-// TODO: longwave module connection and pin definitions
-    // pin connections and their uses:
-    // - G: GND
-    // - V: 3V3
-    // - T: data line (data received by MCU)
-    // - P1: on/off switch (logic low = receiver running)
+#define LW_PORT             SIMPLE_GPIOB    // LWR = LongWave
+#define LW_DATA_PIN         0U      // labelled 'T'  on module
+#define LW_ENABLE_PIN       1U      // labelled 'P1' on module
 
 // fonts
 static const uint8_t FONTS[10] = {0xFC, 0x30, 0xDA, 0x7A, 0x36, 0x6E, 0xEE, 0x38, 0xFE, 0x7E};
