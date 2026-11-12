@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+#include <assert.h>
 #include "sn74.h"
 #include "simple_stm32g0xx.h"
 
@@ -35,24 +36,24 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
-// NOTE! SER and SRCLK pins have to be on the same port
-#define SER_SRCLK_PORT  SIMPLE_GPIOA
-#define RCLK_PORT       SIMPLE_GPIOA
-#define SER_PIN         0U
-#define SRCLK_PIN       1U
+// SN74HC595N shift register definitions
+#define SN74_SER_SRCLK_PORT  SIMPLE_GPIOB
+#define SN74_RCLK_PORT       SIMPLE_GPIOB
+#define SN74_SER_PIN         0U
+#define SN74_SRCLK_PIN       1U
+
+// longwave radio transceiver definitions
+
+
+// TODO: longwave module connection and pin definitions
+    // pin connections and their uses:
+    // - G: GND
+    // - V: 3V3
+    // - T: data line (data received by MCU)
+    // - P1: on/off switch (logic low = receiver running)
 
 // fonts
-#define FONT_0          (0xFC)  // 0b11111100
-#define FONT_1          (0x30)  // 0b00110000
-#define FONT_2          (0xDA)  // 0b11011010
-#define FONT_3          (0x7A)  // 0b01111010
-#define FONT_4          (0x36)  // 0b00110110
-#define FONT_5          (0x6E)  // 0b01101110
-#define FONT_6          (0xEE)  // 0b11101110
-#define FONT_7          (0x38)  // 0b00111000
-#define FONT_8          (0xFE)  // 0b11111110
-#define FONT_9          (0x7E)  // 0b01111110
-
+static const uint8_t FONTS[10] = {0xFC, 0x30, 0xDA, 0x7A, 0x36, 0x6E, 0xEE, 0x38, 0xFE, 0x7E};
 
 /* USER CODE END PD */
 
@@ -87,10 +88,10 @@ void SystemClock_Config(void);
 // IDs for which SN74 register corresponds to which which LED
 typedef enum
 {
-    SN74_pin_hourTens = 0,
-    SN74_pin_hourOnes = 1,
-    SN74_pin_minTens  = 2,
-    SN74_pin_minOnes  = 3
+    SN74_pin_hourTens = 2,
+    SN74_pin_hourOnes = 3,
+    SN74_pin_minTens  = 4,
+    SN74_pin_minOnes  = 5
 } SN47_PinIDs;
 
 /* USER CODE END 0 */
@@ -126,25 +127,22 @@ int main(void)
     /* USER CODE BEGIN 2 */
 
     // LSE
-    simple_clock_lseConfig_t lseConfig;
-    lseConfig.bypassEnable = false;
-    lseConfig.enable = true;
-    simple_clock_configureLse(&lseConfig);
+    CC_LSE_Init();
 
     // GPIO
     CC_GPIO_Init();
 
-    // default screen to 9999 at startup/reset
-    sn74_write(SER_SRCLK_PORT, SER_PIN, SRCLK_PIN, FONT_9);
-    sn74_latch(RCLK_PORT, SN74_pin_hourTens);
-    sn74_latch(RCLK_PORT, SN74_pin_hourOnes);
-    sn74_latch(RCLK_PORT, SN74_pin_minTens);
-    sn74_latch(RCLK_PORT, SN74_pin_minOnes);
+    // default screen to 23:59 at startup/reset
+    CC_setTime(2, 3, 5, 9);
 
     // using this module: 
     // https://www.xtals.co.uk/product-page/wwvb-60khz-single-frequency-modules-radio-time-signal-receiver
     //
-    // TODO: figure out pin connections and their uses
+    // pin connections and their uses:
+    // - G: GND
+    // - V: 3V3
+    // - T: data line (data received by MCU)
+    // - P1: on/off switch (logic low = receiver running)
 
     /* USER CODE END 2 */
 
@@ -214,28 +212,53 @@ void CC_GPIO_Init(void)
     gpio_config_leds.speed = simple_gpio_speed_vlow;
 
     // SER config
-    gpio_config_leds.pin = SER_PIN;
-    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
+    gpio_config_leds.pin = SN74_SER_PIN;
+    simple_gpio_configure(SN74_SER_SRCLK_PORT, &gpio_config_leds);
 
     // SRCLK config
-    gpio_config_leds.pin = SRCLK_PIN;
-    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
+    gpio_config_leds.pin = SN74_SRCLK_PIN;
+    simple_gpio_configure(SN74_SER_SRCLK_PORT, &gpio_config_leds);
 
     // RCLK config
     // hour tens
     gpio_config_leds.pin = SN74_pin_hourTens;
-    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
+    simple_gpio_configure(SN74_RCLK_PORT, &gpio_config_leds);
     // hour ones
     gpio_config_leds.pin = SN74_pin_hourOnes;
-    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
+    simple_gpio_configure(SN74_RCLK_PORT, &gpio_config_leds);
     // minute tens
     gpio_config_leds.pin = SN74_pin_minTens;
-    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
+    simple_gpio_configure(SN74_RCLK_PORT, &gpio_config_leds);
     // minute ones
     gpio_config_leds.pin = SN74_pin_minOnes;
-    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
+    simple_gpio_configure(SN74_RCLK_PORT, &gpio_config_leds);
 
     return;
+}
+
+void CC_LSE_Init(void)
+{
+    simple_clock_lseConfig_t lseConfig;
+    lseConfig.bypassEnable = false;
+    lseConfig.enable = true;
+    simple_clock_configureLse(&lseConfig);
+}
+
+void CC_setTime(uint8_t ht, uint8_t ho, uint8_t mt, uint8_t mo)
+{
+    assert(ht <= 2);
+    assert(ho <= 9);
+    assert(mt <= 5);
+    assert(mo <= 9);
+
+    sn74_write(SN74_SER_SRCLK_PORT, SN74_SER_PIN, SN74_SRCLK_PIN, FONTS[ht]);
+    sn74_latch(SN74_RCLK_PORT, SN74_pin_hourTens);
+    sn74_write(SN74_SER_SRCLK_PORT, SN74_SER_PIN, SN74_SRCLK_PIN, FONTS[ho]);
+    sn74_latch(SN74_RCLK_PORT, SN74_pin_hourOnes);
+    sn74_write(SN74_SER_SRCLK_PORT, SN74_SER_PIN, SN74_SRCLK_PIN, FONTS[mt]);
+    sn74_latch(SN74_RCLK_PORT, SN74_pin_minTens);
+    sn74_write(SN74_SER_SRCLK_PORT, SN74_SER_PIN, SN74_SRCLK_PIN, FONTS[mo]);
+    sn74_latch(SN74_RCLK_PORT, SN74_pin_minOnes);
 }
 
 /* USER CODE END 4 */

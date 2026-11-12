@@ -55,6 +55,10 @@ void Error_Handler(void);
 /* USER CODE BEGIN EFP */
 
 void CC_GPIO_Init(void);
+void CC_LSE_Init(void);
+
+// time functions
+void CC_setTime(uint8_t ht, uint8_t ho, uint8_t mt, uint8_t mo);
 
 /* USER CODE END EFP */
 
