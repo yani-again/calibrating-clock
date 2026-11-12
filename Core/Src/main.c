@@ -131,38 +131,8 @@ int main(void)
     lseConfig.enable = true;
     simple_clock_configureLse(&lseConfig);
 
-    // TODO: configure GPIO
-    // PA0 = SER
-    // PA1 = SRCLK
-    // PA2-5 = RCLK
-    simple_gpio_config_t gpio_config_leds;
-
-    gpio_config_leds.mode = simple_gpio_mode_output;
-    gpio_config_leds.outputType = simple_gpio_out_pushpull;
-    gpio_config_leds.pupd = simple_gpio_pupd_none;
-    gpio_config_leds.speed = simple_gpio_speed_vlow;
-
-    // SER config
-    gpio_config_leds.pin = SER_PIN;
-    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
-
-    // SRCLK config
-    gpio_config_leds.pin = SRCLK_PIN;
-    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
-
-    // RCLK config
-    // hour tens
-    gpio_config_leds.pin = SN74_pin_hourTens;
-    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
-    // hour ones
-    gpio_config_leds.pin = SN74_pin_hourOnes;
-    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
-    // minute tens
-    gpio_config_leds.pin = SN74_pin_minTens;
-    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
-    // minute ones
-    gpio_config_leds.pin = SN74_pin_minOnes;
-    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
+    // GPIO
+    CC_GPIO_Init();
 
     // default screen to 9999 at startup/reset
     sn74_write(SER_SRCLK_PORT, SER_PIN, SRCLK_PIN, FONT_9);
@@ -170,6 +140,11 @@ int main(void)
     sn74_latch(RCLK_PORT, SN74_pin_hourOnes);
     sn74_latch(RCLK_PORT, SN74_pin_minTens);
     sn74_latch(RCLK_PORT, SN74_pin_minOnes);
+
+    // using this module: 
+    // https://www.xtals.co.uk/product-page/wwvb-60khz-single-frequency-modules-radio-time-signal-receiver
+    //
+    // TODO: figure out pin connections and their uses
 
     /* USER CODE END 2 */
 
@@ -225,6 +200,43 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void CC_GPIO_Init(void)
+{
+    // PA0 = SER
+    // PA1 = SRCLK
+    // PA2-5 = RCLK
+    simple_gpio_config_t gpio_config_leds;
+
+    gpio_config_leds.mode = simple_gpio_mode_output;
+    gpio_config_leds.outputType = simple_gpio_out_pushpull;
+    gpio_config_leds.pupd = simple_gpio_pupd_none;
+    gpio_config_leds.speed = simple_gpio_speed_vlow;
+
+    // SER config
+    gpio_config_leds.pin = SER_PIN;
+    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
+
+    // SRCLK config
+    gpio_config_leds.pin = SRCLK_PIN;
+    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
+
+    // RCLK config
+    // hour tens
+    gpio_config_leds.pin = SN74_pin_hourTens;
+    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
+    // hour ones
+    gpio_config_leds.pin = SN74_pin_hourOnes;
+    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
+    // minute tens
+    gpio_config_leds.pin = SN74_pin_minTens;
+    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
+    // minute ones
+    gpio_config_leds.pin = SN74_pin_minOnes;
+    simple_gpio_configure(SIMPLE_GPIOA, &gpio_config_leds);
+
+    return;
+}
 
 /* USER CODE END 4 */
 
