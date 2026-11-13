@@ -1,4 +1,9 @@
 /* USER CODE BEGIN Header */
+
+// MSF SIGNAL SOURCES:
+// - https://www.npl.co.uk/getattachment/2afd4c3b-fc8d-486c-b2b9-fc9a5a66394c/msf-time-date-code-2019.pdf
+// - https://timetoolsltd.com/atomic-clocks/decoding-the-msf-60-radio-time-signal/
+
 /**
   ******************************************************************************
   * @file           : main.c
@@ -43,9 +48,9 @@
 #define SN74_SRCLK_PIN       1U
 
 // longwave radio transceiver definitions
-#define LW_PORT             SIMPLE_GPIOB    // LWR = LongWave
-#define LW_DATA_PIN         0U      // labelled 'T'  on module
-#define LW_ENABLE_PIN       1U      // labelled 'P1' on module
+#define LW_PORT             'A'    // LWR = LongWave
+#define LW_DATA_PIN         6U      // labelled 'T'  on module
+#define LW_ENABLE_PIN       7U      // labelled 'P1' on module
 
 // fonts
 static const uint8_t FONTS[10] = {0xFC, 0x30, 0xDA, 0x7A, 0x36, 0x6E, 0xEE, 0x38, 0xFE, 0x7E};
@@ -129,6 +134,17 @@ int main(void)
 
     // default screen to 23:59 at startup/reset
     CC_setTime(2, 3, 5, 9);
+
+    // EXTI and NVIC configure
+    simple_exti_config_t exti_config;
+    exti_config.port = LW_PORT;
+    exti_config.pin = LW_DATA_PIN;
+    exti_config.fallingTrigger_enable = true;
+    exti_config.risingTrigger_enable = true;
+    exti_config.interrupt_enable = true;
+    exti_config.event_enable = false;
+
+    simple_exti_configure(&exti_config);
 
     // using this module: 
     // https://www.xtals.co.uk/product-page/wwvb-60khz-single-frequency-modules-radio-time-signal-receiver
