@@ -136,15 +136,7 @@ int main(void)
     CC_setTime(2, 3, 5, 9);
 
     // EXTI and NVIC configure
-    simple_exti_config_t exti_config;
-    exti_config.port = LW_PORT;
-    exti_config.pin = LW_DATA_PIN;
-    exti_config.fallingTrigger_enable = true;
-    exti_config.risingTrigger_enable = true;
-    exti_config.interrupt_enable = true;
-    exti_config.event_enable = false;
-
-    simple_exti_configure(&exti_config);
+    CC_EXTI_init();
 
     // using this module: 
     // https://www.xtals.co.uk/product-page/wwvb-60khz-single-frequency-modules-radio-time-signal-receiver
@@ -270,6 +262,19 @@ void CC_setTime(uint8_t ht, uint8_t ho, uint8_t mt, uint8_t mo)
     sn74_latch(SN74_RCLK_PORT, SN74_pin_minTens);
     sn74_write(SN74_SER_SRCLK_PORT, SN74_SER_PIN, SN74_SRCLK_PIN, FONTS[mo]);
     sn74_latch(SN74_RCLK_PORT, SN74_pin_minOnes);
+}
+
+void CC_EXTI_init(void)
+{
+    simple_exti_config_t exti_config;
+    exti_config.port = LW_PORT;
+    exti_config.pin = LW_DATA_PIN;
+    exti_config.fallingTrigger_enable = true;
+    exti_config.risingTrigger_enable = true;
+    exti_config.interrupt_enable = true;
+    exti_config.event_enable = false;
+
+    simple_exti_configure(&exti_config);
 }
 
 /* USER CODE END 4 */

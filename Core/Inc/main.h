@@ -56,9 +56,12 @@ void Error_Handler(void);
 
 void CC_GPIO_Init(void);
 void CC_LSE_Init(void);
+void CC_EXTI_init(void);
 
 // time functions
 void CC_setTime(uint8_t ht, uint8_t ho, uint8_t mt, uint8_t mo);
+
+// TODO: longwave radio module functions
 
 /* USER CODE END EFP */
 
