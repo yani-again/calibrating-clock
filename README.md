@@ -25,3 +25,8 @@ The core idea is based off [**the MSF signal**](https://en.wikipedia.org/wiki/Ti
 - [60KHz radio transceiver](https://www.xtals.co.uk/product-page/wwvb-60khz-single-frequency-modules-radio-time-signal-receiver) *(1x)*
 - [SN74HC595N shift registers](https://www.digikey.com/en/products/detail/texas-instruments/SN74HC595N/277246) *(4x)*
 - [10-pin, 7-segment displays](https://www.amazon.co.uk/sourcing-map-Segment-Display-Electronic/dp/B0GYFY3G42?th=1) *(4x)*
+
+## Helpful Sources
+
+- [MSF 60 kHz Time and Date Code](https://www.npl.co.uk/getattachment/2afd4c3b-fc8d-486c-b2b9-fc9a5a66394c/msf-time-date-code-2019.pdf)
+- [Decoding The MSF-60 Radio Time Signal](https://timetoolsltd.com/atomic-clocks/decoding-the-msf-60-radio-time-signal/)
